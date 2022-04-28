@@ -6,6 +6,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ParserEngine {
 
@@ -44,11 +45,21 @@ public class ParserEngine {
 
         print("\nLinks: (%d)", links.size());
         for (Element link : links) {
-            if(divs.text().contains("garbanzos")){
-                if(link.tagName().equals("ingredients") && link.text().equals("garbanzos")) {
-                    print(" * a: <%s>  (%s)", link.attr("href"), link.text());
+            Document document = Jsoup.connect(link.attr("href")).get();
+            Element element = document.select("div#ingredients").first();
+            if(element != null)
+                try{
+                    if(element.text().toUpperCase().contains("garbanzos")){
+                        print(" * a: <%s>  (%s)", link.attr("href"), link.text());
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-            }
+            /*if(divs.text().contains("garbanzos")){
+                if(link.tagName().equals("ingredients") && link.text().equals("garbanzos")) {
+
+                }
+            }*/
         }
 
     }
